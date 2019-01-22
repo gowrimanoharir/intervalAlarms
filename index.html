@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <input id="totalTime" type=number value="6"/>
+    <input id="intervals" type=text value="1,2"/>
+    <button onclick="setTimer()">Start</button>
+  </div>
+</body>
+<script>
+  let totalTime = 0;
+  let intervals = [];
+  let endTimer = false;
+  let startTime = 0;
+  let i = 0;
+  let id = null;
+  let repeat = true;
+
+  function setTimer() {
+    totalTime = document.getElementById("totalTime").value
+    intervals = document.getElementById("intervals").value.split(',');
+    startTimer();
+  }
+
+
+  function startTimer() {
+    startTime = Date.now()
+    console.log('start', new Date())
+    setTimeout(function() {
+      const sound = new Audio("./audio/openhat.wav"); 
+      sound.loop=true;
+      sound.play();
+      setTimeout(()=>sound.loop=false, 6000);      
+      endTimer = true;
+      console.log('after',new Date())
+      clearTimeout(id)
+    }, totalTime*60*1000)
+    id = setTimeout(runIntervals, parseInt(intervals[i].trim())*60*1000);  
+  }
+
+  let runIntervals = function() {
+    console.log(`interval${i+1} ended - ${new Date()}`)
+    const sound = new Audio("./audio/kick.wav"); 
+    sound.loop=true;
+    sound.play();
+    setTimeout(()=>sound.loop=false, 3000);
+    i++;
+    if(endTimer || (i>=intervals.length && !repeat)) {
+      return;
+    } else if(i>=intervals.length && repeat) {
+      i=0;
+    }
+
+    id = setTimeout(runIntervals, parseInt(intervals[i].trim())*60*1000);   
+  }
+</script>
+</html>
+
